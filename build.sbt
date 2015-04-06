@@ -10,6 +10,8 @@ resolvers += Resolver.defaultLocal
 
 resolvers += Resolver.sonatypeRepo("snapshots")
 
+fork in Test := true
+
 libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-compiler" % _)
 
 libraryDependencies <+= scalaVersion("org.scala-lang" % "scala-reflect" % _)
