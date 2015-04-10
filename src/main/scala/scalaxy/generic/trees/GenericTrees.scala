@@ -33,19 +33,19 @@ object GenericTrees {
     }
   }
   private object GenericOpsCall {
-    def unapply(tree: Tree): Option[(Tree, Type, String, String)] = Option(tree) collect {
+    def unapply(tree: Tree): Option[(Tree, Type, String, TermName)] = Option(tree) collect {
 
       case Apply(Select(GenericOpsCreation(target, tpe), callName), List(StringConstant(methodName))) =>
-        (target, tpe, callName.toString, methodName)
+        (target, tpe, callName.toString, TermName(methodName))
     }
   }
   private object GenericNumberCall {
     def unapply(tree: Tree): Option[(Int, Type)] = Option(tree) collect {
 
-      case Apply(TypeApply(Select(GenericPackage(), Name(n @ ("one" | "zero"))), List(tpt)), List(ev)) =>
+      case Apply(TypeApply(Select(GenericPackage(), N(n @ ("one" | "zero"))), List(tpt)), List(ev)) =>
         (if (n == "one") 1 else 0, tpt.tpe)
 
-      case Apply(Apply(TypeApply(Select(GenericPackage(), Name("number")), List(tpt)), List(Literal(Constant(n: Int)))), List(ev)) =>
+      case Apply(Apply(TypeApply(Select(GenericPackage(), N("number")), List(tpt)), List(Literal(Constant(n: Int)))), List(ev)) =>
         (n, tpt.tpe)
     }
   }
@@ -53,20 +53,40 @@ object GenericTrees {
   private def normalizeName(name: String): TermName =
     TermName(NameTransformer.encode(NameTransformer.decode(name)))
 
+  private def restrictMethodSymbol(sym: Symbol, argTypes: List[Type]): Symbol = {
+    sym.suchThat(s => {
+      s.isMethod && {
+        val params = s.asMethod.paramLists.flatten
+
+        params.size == argTypes.size && params.zip(argTypes).forall {
+          case (param, argType) =>
+            argType == null ||
+            argType == NoType ||
+            argType <:< param.typeSignature
+        }
+      }
+    })
+  }
+
   def simplifier: PartialFunction[(Tree, Tree => Tree), Tree] = {
-    case (AsInstanceOf(target, tpe @ ConcreteType()), transformer) if target.tpe =:= tpe =>
+
+    case (q"${target @ WithType(t1)}.asInstanceOf[${WithType(t2)}]", transformer)
+        if t1 =:= t2 =>
       transformer(target)
 
     case (GenericNumberCall(n, tpe), transformer) if typesToNumerics.contains(tpe) =>
       Literal(Constant(typesToNumerics(tpe).fromInt(n)))
 
-    case (Apply(GenericOpsCall(target, ConcreteType(), "applyDynamic", methodName), args), transformer) =>
-      Apply(Select(transformer(target), normalizeName(methodName)), args.map(transformer))
+    case (Apply(GenericOpsCall(target, tpe @ ConcreteType(), "applyDynamic", methodName), args), transformer) =>
+      val sym = restrictMethodSymbol(tpe member methodName, args.map(_.tpe))
+      q"${transformer(target)}.$sym(..${args.map(transformer)})"
 
-    case (Apply(GenericOpsCall(target, ConcreteType(), "updateDynamic", methodName), List(value)), transformer) =>
-      Apply(Select(transformer(target), TermName("update")), List(transformer(value)))
+    case (Apply(GenericOpsCall(target, tpe @ ConcreteType(), "updateDynamic", methodName), List(value)), transformer) =>
+      val sym = restrictMethodSymbol(tpe member TermName("update"), List(value.tpe))
+      q"${transformer(target)}.$sym(${transformer(value)})"
 
-    case (GenericOpsCall(target, ConcreteType(), "selectDynamic", methodName), transformer) =>
-      Select(transformer(target), normalizeName(methodName))
+    case (GenericOpsCall(target, tpe @ ConcreteType(), "selectDynamic", methodName), transformer) =>
+      val sym = restrictMethodSymbol(tpe member methodName, Nil)
+      q"${transformer(target)}.$sym"
   }
 }

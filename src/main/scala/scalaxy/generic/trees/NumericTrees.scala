@@ -10,10 +10,10 @@ object NumericTrees {
     def isNumeric(tpe: Type): Boolean = tpe.typeConstructor <:< numTpeConstructor
     def unapply(tree: Tree): Option[(Int, Type)] = Option(tree) collect {
 
-      case Select(WithType(numType, _), Name(n @ ("one" | "zero"))) if isNumeric(numType) =>
+      case Select(WithType(numType), N(n @ ("one" | "zero"))) if isNumeric(numType) =>
         (if (n == "one") 1 else 0, tree.tpe)
 
-      case Apply(Select(WithType(numType, _), Name("fromInt")), List(Literal(Constant(n: Int)))) if isNumeric(numType) =>
+      case Apply(Select(WithType(numType), N("fromInt")), List(Literal(Constant(n: Int)))) if isNumeric(numType) =>
         (n, tree.tpe)
     }
   }
@@ -35,7 +35,7 @@ object NumericTrees {
     case (NumericNumberCall(n, tpe @ ConcreteType()), transformer) => //if typesToNumerics.contains(tpe) =>
       Literal(Constant(typesToNumerics(tpe).fromInt(n).asInstanceOf[AnyRef]))
 
-    case (Apply(Select(NumericOpsCreation(target, tpe @ ConcreteType()), name), args), transformer) =>
+    case (tree @ Apply(Select(NumericOpsCreation(target, tpe @ ConcreteType()), name), args), transformer) =>
       val sel = Select(transformer(target), TermName(NameTransformer.encode(NameTransformer.decode(name.toString))))
       if (args.isEmpty) {
         sel
