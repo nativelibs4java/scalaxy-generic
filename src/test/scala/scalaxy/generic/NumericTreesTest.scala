@@ -1,26 +1,25 @@
 package scalaxy.generic.test
 
+import scalaxy.generic.NumericTrees
+import scalaxy.generic.TreeSimplification
+
 import org.junit._
 import org.junit.Assert._
 
-// import scala.reflect.runtime.universe
-import scala.reflect.runtime.universe.TypeTag
-// import scala.reflect.runtime.currentMirror
-
-import scalaxy.generic.trees._
 import scala.language.implicitConversions
-// import scala.language.dynamics
 
-class NumericTreesTest {
+class NumericTreesTest
+  extends TestBase
+  with NumericTrees
+  with TreeSimplification
+{
+  import global._
+
+  override def treeSimplifiers =
+    List(numericTreeSimplifier)
 
   @Test
   def testTreeRewrite {
-    import scala.reflect.runtime.universe._
-    import scala.reflect.runtime.currentMirror
-    import scala.tools.reflect.ToolBox
-
-    val tb = currentMirror.mkToolBox()
-
     def numericOpTree[A: Numeric: TypeTag]: Tree = {
       import Numeric.Implicits._
       reify({
@@ -39,8 +38,8 @@ class NumericTreesTest {
       // a = (a / 3.0)
       a.toDouble
     }).tree
-    assertEquals(tb.typecheck(doubleTree).toString,
-      simplifyGenericTree(tb.typecheck(numericDoubleTree)).toString
+    assertEquals(typecheck(doubleTree).toString,
+      simplifyGenericTree(typecheck(numericDoubleTree)).toString
         .replaceAll("\\$times", "*")
         .replaceAll("\\$plus", "+")
         .replaceAll("\\$minus", "-")

@@ -1,17 +1,15 @@
 package scalaxy.generic
-package trees
 
-import scala.language.implicitConversions
+import scala.reflect.api.Universe
 
 import scala.reflect.NameTransformer
-import scala.reflect.runtime.universe._
-import scala.reflect.runtime.currentMirror
+import scala.language.implicitConversions
 
-//import scalaxy.debug._
+private[generic] trait GenericTrees extends Utils {
+  val global: Universe
+  import global._
 
-object GenericTrees {
-
-  private lazy val genericPackageSymbol = currentMirror.staticModule("scalaxy.generic.package")
+  private lazy val genericPackageSymbol = rootMirror.staticModule("scalaxy.generic.package")
 
   private object StringConstant {
     def unapply(tree: Tree) = Option(tree) collect {
@@ -68,7 +66,7 @@ object GenericTrees {
     })
   }
 
-  def simplifier: PartialFunction[(Tree, Tree => Tree), Tree] = {
+  def genericTreeSimplifier: TreeSimplifier = {
 
     case (q"${target @ WithType(t1)}.asInstanceOf[${WithType(t2)}]", transformer)
         if t1 =:= t2 =>

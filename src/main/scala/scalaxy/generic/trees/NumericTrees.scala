@@ -1,9 +1,12 @@
-package scalaxy.generic.trees
+package scalaxy.generic
+
+import scala.reflect.api.Universe
 
 import scala.reflect.NameTransformer
-import scala.reflect.runtime.universe._
 
-object NumericTrees {
+private[generic] trait NumericTrees extends Utils {
+  val global: Universe
+  import global._
 
   private object NumericNumberCall {
     lazy val numTpeConstructor = typeOf[Numeric[Any]].typeConstructor
@@ -31,7 +34,7 @@ object NumericTrees {
     }
   }
 
-  def simplifier: PartialFunction[(Tree, Tree => Tree), Tree] = {
+  def numericTreeSimplifier: TreeSimplifier = {
     case (NumericNumberCall(n, tpe @ ConcreteType()), transformer) => //if typesToNumerics.contains(tpe) =>
       Literal(Constant(typesToNumerics(tpe).fromInt(n).asInstanceOf[AnyRef]))
 

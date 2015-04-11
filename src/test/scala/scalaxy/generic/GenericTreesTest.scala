@@ -1,29 +1,23 @@
-package scalaxy.generic.test
-
-import scalaxy.generic._
-import scalaxy.generic.trees._
+package scalaxy.generic
+package test
 
 import org.junit._
 import org.junit.Assert._
 
-// import scala.reflect.runtime.universe
-import scala.reflect.runtime.universe.TypeTag
-// import scala.reflect.runtime.currentMirror
-
-import scalaxy.generic.trees._
 import scala.language.implicitConversions
-// import scala.language.dynamics
 
-class GenericTreesTest {
+class GenericTreesTest
+  extends TestBase
+  with GenericTrees
+  with TreeSimplification
+{
+  import global._
+
+  override def treeSimplifiers =
+    List(genericTreeSimplifier)
 
   @Test
   def testTreeRewrite {
-    import scala.reflect.runtime.universe._
-    import scala.reflect.runtime.currentMirror
-    import scala.tools.reflect.ToolBox
-
-    val tb = currentMirror.mkToolBox()
-
     def genericOpTree[A: Generic: TypeTag]: Tree = {
       reify({
         var a = one[A]
@@ -42,8 +36,8 @@ class GenericTreesTest {
       a.toDouble
     }).tree
     assertEquals(
-      tb.typecheck(doubleTree).toString,
-      simplifyGenericTree(tb.typecheck(genericDoubleTree)).toString
+      typecheck(doubleTree).toString,
+      simplifyGenericTree(typecheck(genericDoubleTree)).toString
         .replaceAll("\\$times", "*")
         .replaceAll("\\$plus", "+")
         .replaceAll("\\$minus", "-")
