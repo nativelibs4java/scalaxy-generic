@@ -21,8 +21,6 @@ import scala.reflect.runtime.currentMirror
 
 package object generic {
   //type TypeTag[T] = scala.reflect.runtime.universe.TypeTag[T]
-  private[generic] type TreeSimplifier =
-    PartialFunction[(Tree, Tree => Tree), Tree]
 
   def generic[A: Generic](value: A) = new GenericOps[A](value)
 

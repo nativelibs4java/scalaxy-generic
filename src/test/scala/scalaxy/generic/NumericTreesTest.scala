@@ -1,17 +1,15 @@
 package scalaxy.generic.test
 
-import scalaxy.generic.NumericTrees
-import scalaxy.generic.TreeSimplification
+import scalaxy.generic.NumericTreeSimplifiers
 
 import org.junit._
 import org.junit.Assert._
 
 import scala.language.implicitConversions
 
-class NumericTreesTest
+class NumericTreeSimplifiersTest
   extends TestBase
-  with NumericTrees
-  with TreeSimplification
+  with NumericTreeSimplifiers
 {
   import global._
 

@@ -5,17 +5,20 @@ import scala.reflect.api.Universe
 import scala.reflect.NameTransformer
 
 private[generic]
-trait TreeSimplification extends Utils
+trait TreeSimplifiers extends Utils
 {
   val global: Universe
   import global._
+
+  type TreeSimplifier =
+    PartialFunction[(Tree, Tree => Tree), Tree]
 
   def treeSimplifiers: List[TreeSimplifier]
 
   private[this] lazy val treeSimplifier: Tree => Tree = {
     val f: TreeSimplifier =
       treeSimplifiers.reduceLeft(_ orElse _)
-    //genericTreesSimplifier orElse numericTreesSimplifier
+    //genericTreesSimplifier orElse NumericTreeSimplifiersSimplifier
 
     val transformer = new Transformer {
       val self = (tree: Tree) => transform(tree)

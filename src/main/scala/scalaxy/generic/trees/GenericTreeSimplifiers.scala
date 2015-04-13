@@ -5,7 +5,7 @@ import scala.reflect.api.Universe
 import scala.reflect.NameTransformer
 import scala.language.implicitConversions
 
-private[generic] trait GenericTrees extends Utils {
+private[generic] trait GenericTreeSimplifiers extends TreeSimplifiers with Utils {
   val global: Universe
   import global._
 

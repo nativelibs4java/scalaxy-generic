@@ -47,7 +47,4 @@ private[generic] trait Utils {
       typeOf[math.BigDecimal] -> implicitly[Numeric[math.BigDecimal]]
     )
   }
-
-  type TreeSimplifier =
-    PartialFunction[(Tree, Tree => Tree), Tree]
 }

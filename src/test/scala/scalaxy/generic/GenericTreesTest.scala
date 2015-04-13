@@ -6,10 +6,9 @@ import org.junit.Assert._
 
 import scala.language.implicitConversions
 
-class GenericTreesTest
+class GenericTreeSimplifiersTest
   extends TestBase
-  with GenericTrees
-  with TreeSimplification
+  with GenericTreeSimplifiers
 {
   import global._
 

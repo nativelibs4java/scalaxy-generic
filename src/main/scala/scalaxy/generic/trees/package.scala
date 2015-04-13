@@ -1,8 +1,6 @@
 package scalaxy.generic
 
-import scala.reflect.runtime.universe._
-
-package object trees extends GenericTrees with NumericTrees with TreeSimplification {
+package object trees extends GenericTreeSimplifiers with NumericTreeSimplifiers with TreeSimplifiers {
   override val global = scala.reflect.runtime.universe
   import global._
 
