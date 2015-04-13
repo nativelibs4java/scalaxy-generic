@@ -1,11 +1,9 @@
 package scalaxy.generic
 
-import scala.reflect.api.Universe
-
 import scala.reflect.NameTransformer
 
 private[generic] trait NumericTreeSimplifiers extends TreeSimplifiers with Utils {
-  val global: Universe
+  val global: scala.reflect.api.Universe
   import global._
 
   private object NumericNumberCall {

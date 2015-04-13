@@ -1,12 +1,10 @@
 package scalaxy.generic
 
-import scala.reflect.api.Universe
-
 import scala.reflect.NameTransformer
 import scala.language.implicitConversions
 
 private[generic] trait GenericTreeSimplifiers extends TreeSimplifiers with Utils {
-  val global: Universe
+  val global: scala.reflect.api.Universe
   import global._
 
   private lazy val genericPackageSymbol = rootMirror.staticModule("scalaxy.generic.package")
