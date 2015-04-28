@@ -52,8 +52,12 @@ package object generic {
   def one[A: Generic]: A = numeric[A].one
   def number[A: Generic](value: Int): A = numeric[A].fromInt(value)
 
-  // implicit def mkGenericOps[A: Generic](value: GenericOps[_]): GenericOps[A] = new GenericOps[A](value.value.asInstanceOf[A])
-  implicit def mkGenericOps[A: Generic](value: A): GenericOps[A] = new GenericOps[A](value)
+  def maxValue[A: Generic]: A = macro scalaxy.generic.internal.maxValue[A]
+  def minPositiveValue[A: Generic]: A = macro scalaxy.generic.internal.minPositiveValue[A]
+  def minValue[A: Generic]: A = macro scalaxy.generic.internal.minValue[A]
+  def positiveInfinity[A : Generic]: A = macro scalaxy.generic.internal.positiveInfinity[A]
+  def negativeInfinity[A : Generic]: A = macro scalaxy.generic.internal.negativeInfinity[A]
+  def NaN[A : Generic]: A = macro scalaxy.generic.internal.NaN[A]
 
-  //def generic[A: Generic](value: A, implicitConversions: Any*) = new GenericOps[A](value, implicitConversions)
+  implicit def mkGenericOps[A: Generic](value: A): GenericOps[A] = new GenericOps[A](value)
 }

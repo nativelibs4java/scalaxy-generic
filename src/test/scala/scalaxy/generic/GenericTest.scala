@@ -51,6 +51,35 @@ class GenericTest {
   }
 
   @Test
+  def testMinMaxValues {
+    assertEquals(Int.MaxValue, maxValue[Int])
+    assertEquals(Short.MaxValue, maxValue[Short])
+    assertEquals(Byte.MaxValue, maxValue[Byte])
+    assertEquals(Long.MaxValue, maxValue[Long])
+    assertEquals(Double.MaxValue, maxValue[Double], 0)
+    assertEquals(Float.MaxValue, maxValue[Float], 0)
+
+    assertEquals(Int.MinValue, minValue[Int])
+    assertEquals(Short.MinValue, minValue[Short])
+    assertEquals(Byte.MinValue, minValue[Byte])
+    assertEquals(Long.MinValue, minValue[Long])
+    assertEquals(Double.MinValue, minValue[Double], 0.0)
+    assertEquals(Float.MinValue, minValue[Float], 0.0f)
+
+    assertEquals(Double.MinPositiveValue, minPositiveValue[Double], 0.0)
+    assertEquals(Float.MinPositiveValue, minPositiveValue[Float], 0.0f)
+
+    assertEquals(Double.PositiveInfinity, positiveInfinity[Double], 0.0)
+    assertEquals(Float.PositiveInfinity, positiveInfinity[Float], 0.0f)
+
+    assertEquals(Double.NegativeInfinity, negativeInfinity[Double], 0.0)
+    assertEquals(Float.NegativeInfinity, negativeInfinity[Float], 0.0f)
+
+    assertEquals(Double.NaN, NaN[Double], 0.0)
+    assertEquals(Float.NaN, NaN[Float], 0.0f)
+  }
+
+  @Test
   def testAlternatives {
     def test[N: TypeTag: Generic](a: N) {
       assertEquals(12, a.toInt)
