@@ -80,6 +80,15 @@ class GenericTest {
   }
 
   @Test
+  def testAliases {
+    def max[A: Generic] = maxValue[A]
+    def min[A: Generic] = minValue[A]
+
+    assertEquals(Float.MaxValue, max[Float], 0.0f)
+    assertEquals(Short.MinValue, min[Short])
+  }
+
+  @Test
   def testAlternatives {
     def test[N: TypeTag: Generic](a: N) {
       assertEquals(12, a.toInt)
