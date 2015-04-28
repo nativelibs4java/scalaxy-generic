@@ -13,8 +13,6 @@ trait TreeSimplifiers extends Utils
   type TreeSimplifier =
     PartialFunction[(Tree, Tree => Tree), Tree]
 
-  def typecheck(tree: Tree): Tree
-
   def treeSimplifiers: List[TreeSimplifier]
 
   private[this] lazy val treeSimplifier: Tree => Tree = {

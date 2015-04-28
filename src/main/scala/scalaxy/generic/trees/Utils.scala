@@ -8,6 +8,8 @@ private[generic] trait Utils {
   val global: Universe
   import global._
 
+  def typecheck(tree: Tree): Tree
+
   object WithSymbol {
     def unapply(tree: Tree): Option[Symbol] = Some(tree.symbol)
   }
@@ -16,7 +18,8 @@ private[generic] trait Utils {
   }
   object ConcreteType {
     def unapply(tpe: Type): Boolean = {
-      !tpe.dealias.etaExpand.typeSymbol.asType.isAbstractType
+      tpe != NoType &&
+        !tpe.dealias.etaExpand.typeSymbol.asType.isAbstractType
     }
   }
   object N {
