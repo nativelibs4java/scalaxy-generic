@@ -21,13 +21,7 @@ private[generic] trait NumericTreeSimplifiers extends TreeSimplifiers with Utils
 
   private object NumericOpsCreation {
     def unapply(tree: Tree): Option[(Tree, Type)] = Option(tree) collect {
-      case Apply(
-        Apply(
-          TypeApply(
-            Select(WithSymbol(implicitsModule), name),
-            List(tpt)),
-          List(value)),
-        implicits) =>
+      case Apply(Apply(TypeApply(Select(WithSymbol(implicitsModule), name), List(tpt)), List(value)), implicits) =>
         value -> tpt.tpe
     }
   }

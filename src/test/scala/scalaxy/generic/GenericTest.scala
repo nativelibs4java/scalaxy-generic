@@ -56,8 +56,8 @@ class GenericTest {
     assertEquals(Short.MaxValue, maxValue[Short])
     assertEquals(Byte.MaxValue, maxValue[Byte])
     assertEquals(Long.MaxValue, maxValue[Long])
-    assertEquals(Double.MaxValue, maxValue[Double], 0)
-    assertEquals(Float.MaxValue, maxValue[Float], 0)
+    assertEquals(Double.MaxValue, maxValue[Double], 0.0)
+    assertEquals(Float.MaxValue, maxValue[Float], 0.0f)
 
     assertEquals(Int.MinValue, minValue[Int])
     assertEquals(Short.MinValue, minValue[Short])

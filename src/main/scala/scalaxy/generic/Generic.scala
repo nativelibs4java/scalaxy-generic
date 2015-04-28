@@ -14,6 +14,9 @@ import scala.reflect.runtime.universe.TypeTag
 sealed class Generic[A: TypeTag] {
   def typeTag = implicitly[TypeTag[A]]
   def numeric: Option[Numeric[A]] = implicitly[Option[Numeric[A]]]
+  def extremeValues: Option[ExtremeValues[A]] = implicitly[Option[ExtremeValues[A]]]
+  def floatingPointValues: Option[FloatingPointValues[A]] = implicitly[Option[FloatingPointValues[A]]]
+  override def toString = s"Generic[${typeTag.tpe}]"
 }
 
 object Generic {

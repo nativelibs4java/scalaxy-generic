@@ -123,6 +123,3 @@ trait NumberOps[+A] {
   def toFloat: Float = macro internal.method0[A, Float]
   def toDouble: Double = macro internal.method0[A, Double]
 }
-
-object GenericOps {
-}
